@@ -3,7 +3,6 @@ package routes
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/puppetlabs/grafana-cloud-prometheus-proxy/lib/config"
@@ -19,7 +18,7 @@ func (r *Routes) getHTTPResponse(url string) *http.Response {
 	req, err := http.NewRequest("GET", url, nil)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Error(22): %s\n", err)
 	}
 
 	req.SetBasicAuth(r.Config.TenantID(), r.Config.APIKey())
@@ -27,16 +26,16 @@ func (r *Routes) getHTTPResponse(url string) *http.Response {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Error(30): %s\n", err)
 	}
-
-	defer resp.Body.Close()
 
 	return resp
 }
 
 func (r *Routes) proxyJSON(url string, w http.ResponseWriter, req *http.Request) {
 	resp := r.getHTTPResponse(url)
+
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		fmt.Printf("HTTP Error: %d\n", resp.StatusCode)
@@ -45,7 +44,7 @@ func (r *Routes) proxyJSON(url string, w http.ResponseWriter, req *http.Request)
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Error(48): %s\n", err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
