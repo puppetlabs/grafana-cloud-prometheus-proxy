@@ -2,12 +2,34 @@ package config
 
 import (
 	"fmt"
+	"io/ioutil"
+	"strings"
 
 	"github.com/spf13/viper"
 )
 
 // Config variables for grafana.com.
 type Config struct {
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+func getVar(varName string) string {
+	valFromEnv := viper.GetString(varName)
+
+	if strings.HasPrefix(valFromEnv, "/") {
+		dat, err := ioutil.ReadFile(valFromEnv)
+		check(err)
+
+		return string(dat)
+	}
+
+	return valFromEnv
+
 }
 
 // Init Set the environment Prefix
@@ -17,13 +39,13 @@ func (c *Config) Init() {
 	viper.BindEnv("address")
 	viper.BindEnv("api_key")
 
-	address := viper.GetString("ADDRESS")
+	address := getVar("ADDRESS")
 
 	// Loop over the string with len.
 	fmt.Printf("Address is: %s", address)
 	fmt.Print("\n")
 
-	apiKey := viper.GetString("API_KEY")
+	apiKey := getVar("API_KEY")
 
 	// Loop over the string with len.
 	fmt.Print("API Key is: ")
@@ -32,7 +54,7 @@ func (c *Config) Init() {
 	}
 	fmt.Print("\n")
 
-	tenantID := viper.GetString("TENANT_ID")
+	tenantID := getVar("TENANT_ID")
 
 	// Loop over the string with len.
 	fmt.Print("Tenant ID is:")
