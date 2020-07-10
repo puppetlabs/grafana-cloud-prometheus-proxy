@@ -28,7 +28,7 @@ func getVar(varName string) string {
 		dat, err := ioutil.ReadFile(valFromEnv)
 		check(err)
 
-		return string(dat)
+		return strings.TrimRight(string(dat), "\n")
 	}
 
 	return valFromEnv
