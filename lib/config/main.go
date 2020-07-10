@@ -10,6 +10,9 @@ import (
 
 // Config variables for grafana.com.
 type Config struct {
+	address string
+	apiKey string
+	tenantID string
 }
 
 func check(e error) {
@@ -39,26 +42,26 @@ func (c *Config) Init() {
 	viper.BindEnv("address")
 	viper.BindEnv("api_key")
 
-	address := getVar("ADDRESS")
+	c.address = getVar("ADDRESS")
 
 	// Loop over the string with len.
-	fmt.Printf("Address is: %s", address)
+	fmt.Printf("Address is: %s", c.address)
 	fmt.Print("\n")
 
-	apiKey := getVar("API_KEY")
+	c.apiKey = getVar("API_KEY")
 
 	// Loop over the string with len.
 	fmt.Print("API Key is: ")
-	for i := 0; i < len(apiKey); i++ {
+	for i := 0; i < len(c.apiKey); i++ {
 		fmt.Print("*")
 	}
 	fmt.Print("\n")
 
-	tenantID := getVar("TENANT_ID")
+	c.tenantID = getVar("TENANT_ID")
 
 	// Loop over the string with len.
 	fmt.Print("Tenant ID is:")
-	for i := 0; i < len(tenantID); i++ {
+	for i := 0; i < len(c.tenantID); i++ {
 		fmt.Print("*")
 	}
 
@@ -68,15 +71,15 @@ func (c *Config) Init() {
 
 // Address of the grafana.com API Endpoint
 func (c *Config) Address() string {
-	return viper.GetString("ADDRESS")
+	return c.address
 }
 
 // APIKey from grafana.com
 func (c *Config) APIKey() string {
-	return viper.GetString("API_KEY")
+	return c.apiKey
 }
 
 // TenantID from grafana.com
 func (c *Config) TenantID() string {
-	return viper.GetString("TENANT_ID")
+	return c.tenantID
 }
